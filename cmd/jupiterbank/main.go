@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const localPort = ":8080"
+const localPort = "8080"
 const localMessage = "[local] Hello, world!"
 
 var message string
@@ -27,5 +27,5 @@ func main() {
 
 	http.HandleFunc("/", hello)
 	fmt.Println("Jupiter bank server running on", port)
-	log.Fatal(http.ListenAndServe(port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
