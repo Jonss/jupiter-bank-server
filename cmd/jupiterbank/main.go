@@ -18,7 +18,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port = localPort
+	port = os.Getenv("PORT")
 	if os.Getenv("APP_MESSAGE") == "" {
 		message = localMessage
 	}
