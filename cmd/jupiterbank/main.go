@@ -21,7 +21,7 @@ func main() {
 	if os.Getenv("PORT") == "" {
 		port = localPort
 	}
-	if os.Getenv("MESSAGE") == "" {
+	if os.Getenv("APP_MESSAGE") == "" {
 		message = localMessage
 	}
 
