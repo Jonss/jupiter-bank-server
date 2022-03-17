@@ -1,6 +1,5 @@
-FROM alpine as alpine
+FROM alpine:v3.15 as alpine
 
 COPY jupiterbank/bin app/bin
 
-EXPOSE 8080
 CMD ["app/bin"]
