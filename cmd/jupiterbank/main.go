@@ -47,7 +47,7 @@ func main() {
 	if message == "" {
 		message = localMessage
 	}
-	dbSource = os.Getenv("DB_SOURCE")
+	dbSource = os.Getenv("DATABASE_URL")
 	if dbSource == "" {
 		dbSource = localDbSource
 	}
