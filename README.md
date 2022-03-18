@@ -5,10 +5,10 @@
 
 ### Hello world!
 - [x] - Hello world endpoint
-- [ ] - CD on Heroku using github actions
-- [ ] - Setup database
-    - [ ] - Setub migrations
-    - [ ] - Setup test containers
+- [x] - CD on Heroku using github actions
+- [x] - Setup database
+    - [x] - Setub migrations
+    - [x] - Setup test containers
 ## Features
 ### Users
 - [ ] - Create user entity
