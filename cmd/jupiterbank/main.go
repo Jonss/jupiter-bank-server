@@ -23,10 +23,10 @@ func health(w http.ResponseWriter, r *http.Request) {
 func configValue(w http.ResponseWriter, r *http.Request) {
 	c, err := q.GetConfigByKey(r.Context(), db.GetConfigByKeyParams{Key: "a_key"})
 	if err != nil {
-		fmt.Fprintf(w, err.Error())
+		fmt.Fprint(w, err.Error())
 		return
 	}
-	fmt.Fprintf(w, fmt.Sprintf("{key: %s, value: %s}", c.Key, c.Value))
+	fmt.Fprintf(w, "{key: %s, value: %s}", c.Key, c.Value)
 }
 
 func main() {
@@ -38,11 +38,11 @@ func main() {
 
 	conn, err := db.NewConnection(cfg.DBURL)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error when connection DB. error=(%v)", err)
 	}
 	err = db.Migrate(conn, cfg.DBName, cfg.DBMigrationPath)
 	if err != nil {
-		panic(err)
+		log.Fatalf("error when migrate. error=(%v)", err)
 	}
 
 	q = *db.New(conn)
@@ -50,6 +50,6 @@ func main() {
 	http.HandleFunc("/", hello)
 	http.HandleFunc("/health", health)
 	http.HandleFunc("/configs", configValue)
-	fmt.Println(fmt.Sprintf("Jupiter bank server running on [%s]. Env: %s", cfg.Port, cfg.Env))
+	fmt.Printf("Jupiter bank server running on [%s]. Env: %s", cfg.Port, cfg.Env)
 	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
 }
