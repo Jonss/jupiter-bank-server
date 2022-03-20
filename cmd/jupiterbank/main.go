@@ -4,25 +4,18 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/Jonss/jupiter-bank-server/pkg/config"
 	"github.com/Jonss/jupiter-bank-server/pkg/db"
 )
 
 // TODO: config using viper
-const localPort = "8080"
-const localMessage = "[local] Hello, world!"
-const localDbSource = "postgres://user:pass@localhost:5445/jupiterbank?sslmode=disable"
-const localDbName = "jupiterbank"
-
-var message string
-var port string
-var dbSource string
-var dbName string
 var q db.Queries
+var cfg config.Config
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, message)
+	fmt.Println("CFG", cfg)
+	fmt.Fprintf(w, cfg.Env)
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
@@ -39,38 +32,26 @@ func configValue(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port = os.Getenv("PORT")
-	if port == "" {
-		port = localPort
-	}
-	message = os.Getenv("APP_MESSAGE")
-	if message == "" {
-		message = localMessage
-	}
-	dbSource = os.Getenv("DATABASE_URL")
-	if dbSource == "" {
-		dbSource = localDbSource
+	var err error
+	cfg, err := config.LoadConfig(".")
+	if err != nil {
+		log.Fatal("error getting config:", err)
 	}
 
-	dbName = os.Getenv("DB_Name")
-	if dbName == "" {
-		dbName = localDbName
-	}
-
-	conn, err := db.NewConnection(dbSource)
+	conn, err := db.NewConnection(cfg.DBURL)
 	if err != nil {
 		panic(err)
 	}
-	err = db.Migrate(conn, dbName, "file://pkg/db/migrations")
+	err = db.Migrate(conn, cfg.DBName, cfg.DBMigrationPath)
 	if err != nil {
 		panic(err)
 	}
+
 	q = *db.New(conn)
 
 	http.HandleFunc("/", hello)
 	http.HandleFunc("/health", health)
 	http.HandleFunc("/configs", configValue)
-
-	fmt.Println("Jupiter bank server running on", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	fmt.Println(fmt.Sprintf("Jupiter bank server running on [%s]. Env: %s", cfg.Port, cfg.Env))
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
 }

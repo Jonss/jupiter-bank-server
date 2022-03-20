@@ -15,7 +15,7 @@ func Migrate(db *sql.DB, dbName, migrationPath string) error {
 	if err != nil {
 		return fmt.Errorf("error when migrate.WithInstance(): error=(%w)", err)
 	}
-	m, err := migrate.NewWithDatabaseInstance(migrationPath, dbName, driver)
+	m, err := migrate.NewWithDatabaseInstance("file://"+migrationPath, dbName, driver)
 	if err != nil {
 		return fmt.Errorf("error when migrate.NewWithDatabaseInstance(): error=(%w)", err)
 	}

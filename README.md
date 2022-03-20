@@ -5,7 +5,7 @@
 
 ### Hello world!
 - [x] - Hello world endpoint
-- [ ] - CD on Heroku using github actions
+- [x] - CD on Heroku using github actions
 - [ ] - Setup database
     - [ ] - Setub migrations
     - [ ] - Setup test containers
