@@ -33,16 +33,16 @@ func main() {
 	var err error
 	cfg, err = config.LoadConfig(".")
 	if err != nil {
-		log.Fatal("error getting config:", err)
+		log.Fatalf("error getting config: error=(%v)", err)
 	}
 
 	conn, err := db.NewConnection(cfg.DBURL)
 	if err != nil {
-		log.Fatalf("error when connection DB. error=(%v)", err)
+		log.Fatal(err)
 	}
 	err = db.Migrate(conn, cfg.DBName, cfg.DBMigrationPath)
 	if err != nil {
-		log.Fatalf("error when migrate. error=(%v)", err)
+		log.Fatal(err)
 	}
 
 	q = *db.New(conn)

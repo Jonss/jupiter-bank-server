@@ -23,10 +23,6 @@ func Migrate(db *sql.DB, dbName, migrationPath string) error {
 	err = m.Up()
 	if err != nil {
 		if err == migrate.ErrNoChange {
-			err = m.Down()
-			if err != nil {
-				return fmt.Errorf("error on migrate.Down(): error=(%w)", err)
-			}
 			return nil
 		}
 		return fmt.Errorf("error on migrate.Up(): error=(%w)", err)
