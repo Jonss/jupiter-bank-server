@@ -36,7 +36,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("error connecting postgres docker", err)
 	}
 
-	err = Migrate(testDB, "jupiterbank_test", "file://migrations")
+	err = Migrate(testDB, "jupiterbank_test", "migrations")
 	if err != nil {
 		log.Fatal("error on migrate:", err)
 	}

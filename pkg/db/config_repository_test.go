@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 )
 
@@ -12,18 +13,40 @@ func TestGetConfigByKey(t *testing.T) {
 		t.Fatalf("unexpected error inserting config. error=(%v)", err)
 	}
 
-	got, err := testQueries.GetConfigByKey(context.Background(), GetConfigByKeyParams{"my_key"})
-	if err != nil {
-		t.Fatalf("unexpected error fetching config. error=(%v)", err)
+	testCases := []struct {
+		name           string
+		expectedErr    error
+		expectedConfig Config
+		key            string
+	}{
+		{
+			name:           "test existing key",
+			expectedErr:    nil,
+			key:            "my_key",
+			expectedConfig: Config{Key: "my_key", Value: "my_value"},
+		},
+		{
+			name:        "test non existing key",
+			expectedErr: sql.ErrNoRows,
+			key:         "non_exist_key",
+		},
 	}
 
-	want := Config{Key: "my_key", Value: "my_value"}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := testQueries.GetConfigByKey(context.Background(), GetConfigByKeyParams{tc.key})
 
-	if got.Key != want.Key {
-		t.Errorf("Config.Key: want %s got %s", got.Key, want.Key)
-	}
+			if err != tc.expectedErr {
+				t.Fatalf("unexpected error. want %v got %v", err, tc.expectedErr)
+			}
 
-	if got.Value != want.Value {
-		t.Errorf("Config.Key: want %s got %s", got.Value, want.Value)
+			if got.Key != tc.expectedConfig.Key {
+				t.Errorf("Config.Key: want %s got %s", got.Key, tc.expectedConfig.Key)
+			}
+
+			if got.Value != tc.expectedConfig.Value {
+				t.Errorf("Config.Key: want %s got %s", got.Value, tc.expectedConfig.Value)
+			}
+		})
 	}
 }
