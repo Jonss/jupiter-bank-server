@@ -9,7 +9,6 @@ import (
 	"github.com/Jonss/jupiter-bank-server/pkg/db"
 )
 
-// TODO: config using viper
 var q db.Queries
 var cfg config.Config
 
@@ -19,7 +18,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "alive and kicking ")
+	fmt.Fprintf(w, "alive and kicking")
 }
 
 func configValue(w http.ResponseWriter, r *http.Request) {
