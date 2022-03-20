@@ -13,7 +13,6 @@ var q db.Queries
 var cfg config.Config
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("CFG", cfg)
 	fmt.Fprintf(w, cfg.Env)
 }
 
@@ -32,7 +31,7 @@ func configValue(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var err error
-	cfg, err := config.LoadConfig(".")
+	cfg, err = config.LoadConfig(".")
 	if err != nil {
 		log.Fatal("error getting config:", err)
 	}
