@@ -6,9 +6,10 @@
 ### Hello world!
 - [x] - Hello world endpoint
 - [x] - CD on Heroku using github actions
-- [ ] - Setup database
-    - [ ] - Setub migrations
-    - [ ] - Setup test containers
+- [x] - Setup database
+    - [x] - Setub migrations
+    - [x] - Setup test containers
+- [x] - Setup env variables wth Viper 
 ## Features
 ### Users
 - [ ] - Create user entity
