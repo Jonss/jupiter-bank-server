@@ -15,7 +15,7 @@
 - [ ] - Create user entity
 - [ ] - Implement validation
 - [ ] - Get user profile
-- [ ] - Login (okta? Firebase? JWT? Paseto)
+- [ ] - Login [PASETO]
 
 ### Login
 
