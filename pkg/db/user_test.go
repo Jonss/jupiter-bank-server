@@ -24,7 +24,7 @@ func createUser(t *testing.T) {
 
 	_, err := testQueries.db.ExecContext(context.Background(), insertQuery)
 	if err != nil {
-		t.Fatalf("unexpected error inserting config. error=(%v)", err)
+		t.Fatalf("unexpected error inserting existing user. error=(%v)", err)
 	}
 }
 
@@ -73,7 +73,7 @@ func TestCreateUser(t *testing.T) {
 						t.Fatalf("unexpected error message. want %v, got %v", tc.errorMessage, dbErr.Message)
 					}
 				}
-				t.Skip("skipping test when expected error")
+				t.Skip("skipping test when error is expected")
 			}
 			if user.Fullname != tc.arg.Fullname {
 				t.Fatalf("unexpected fullname. want %v, got %v", tc.arg.Fullname, user.Fullname)
