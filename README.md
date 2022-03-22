@@ -15,7 +15,7 @@
 - [ ] - Create user entity
     - [x] - create migration
     - [x] - save in db
-    - [ ] - hash password
+    - [x] - hash password
     - [ ] - create function to handle json response
     - [ ] - test handlers
 - [ ] - Implement validation
