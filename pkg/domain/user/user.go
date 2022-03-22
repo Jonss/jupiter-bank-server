@@ -1,11 +1,20 @@
 package user
 
-import "github.com/Jonss/jupiter-bank-server/pkg/db"
+import (
+	"context"
+	"github.com/Jonss/jupiter-bank-server/pkg/db"
+)
 
-type UserDomain struct {
-	q *db.Queries
+type service struct {
+	queries db.Querier
 }
 
-func NewUserDomain(q *db.Queries) *UserDomain {
-	return &UserDomain{q: q}
+func NewUserService(q db.Querier) *service {
+	return &service{queries: q}
 }
+
+type Service interface {
+	CreateUser(ctx context.Context, arg CreateUseParams) (*db.User, error)
+}
+
+var _ Service = (*service)(nil)

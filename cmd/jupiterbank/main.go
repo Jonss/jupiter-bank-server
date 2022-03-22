@@ -33,10 +33,10 @@ func main() {
 	q := db.New(conn)
 
 	router := mux.NewRouter()
-	userDomain := user.NewUserDomain(q)
+	userDomain := user.NewUserService(q)
 	srv := server.NewServer(router, userDomain)
 	srv.Routes() // start routes
 
-	fmt.Printf("Jupiter bank server running on [%s]. Env: %s", cfg.Port, cfg.Env)
+	fmt.Printf("Jupiter bank server running on [%s]. Env: [%s]", cfg.Port, cfg.Env)
 	log.Fatal(http.ListenAndServe(":"+cfg.Port, router))
 }

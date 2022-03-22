@@ -11,25 +11,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.18
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
 
-    - name: Test
-      run: go test -v ./...
+      - name: Test
+        run: go test -v ./...
 
-    - name: Build
-      run: CGO_ENABLED=0 GOOS=linux go build -o jupiterbank/bin cmd/jupiterbank/main.go
-    
-    - name: Deploy
-      if: success() && github.ref == 'refs/heads/main'
-      uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-      with:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: "jupiter-bank-server" #Must be unique in Heroku
-        heroku_email: "joaosantana.ti@gmail.com"
-        usedocker: true
-        dontuseforce: 1
+      - name: Build
+        run: CGO_ENABLED=0 GOOS=linux go build -o jupiterbank/bin cmd/jupiterbank/main.go
+
+      - name: Deploy
+        if: success() && github.ref == 'refs/heads/main'
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "jupiter-bank-server" #Must be unique in Heroku
+          heroku_email: "joaosantana.ti@gmail.com"
+          usedocker: true
+          dontuseforce: 1

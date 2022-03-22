@@ -11,5 +11,5 @@ func health(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) Routes() {
 	s.router.HandleFunc("/health", health).Methods(http.MethodGet)
-	s.router.HandleFunc("/sign-up", s.userDomain.Signup()).Methods(http.MethodPost)
+	s.router.HandleFunc("/sign-up", s.Signup()).Methods(http.MethodPost)
 }

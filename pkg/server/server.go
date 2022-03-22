@@ -6,10 +6,10 @@ import (
 )
 
 type Server struct {
-	router     *mux.Router
-	userDomain *user.UserDomain
+	router      *mux.Router
+	userService user.Service
 }
 
-func NewServer(r *mux.Router, ud *user.UserDomain) *Server {
-	return &Server{router: r, userDomain: ud}
+func NewServer(r *mux.Router, ud user.Service) *Server {
+	return &Server{router: r, userService: ud}
 }
