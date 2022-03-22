@@ -13,11 +13,21 @@
 ## Features
 ### Users
 - [ ] - Create user entity
+    - [x] - create migration
+    - [x] - save in db
+    - [ ] - hash password
+    - [ ] - create function to handle json response
+    - [ ] - test handlers
 - [ ] - Implement validation
-- [ ] - Get user profile
-- [ ] - Login [PASETO]
+- [ ] - Create endpoint to get user profile 
 
-### Login
+
+### Authentication and Authorization
+- [ ] - Implement Login mechanism [PASETO]
+- [ ] - Create endpoint to create token
+- [ ] - Create middleware to handle tokens
+- [ ] - Test tokens
+- [ ] - Improve get user profile, allowing only user to get its own profile
 
 ### Account
 - [ ] - Create account entity
