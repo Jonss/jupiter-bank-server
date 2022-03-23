@@ -9,12 +9,12 @@ import (
 )
 
 type userServiceMock struct {
-	err *error
+	err error
 }
 
-func (q *userServiceMock) CreateUser(ctx context.Context, arg user.CreateUseParams) (*db.User, error) {
+func (q *userServiceMock) CreateUser(_ context.Context, arg user.CreateUseParams) (*db.User, error) {
 	if q.err != nil {
-		return nil, *q.err
+		return nil, q.err
 	}
 	externalID, _ := uuid.NewUUID()
 	return &db.User{

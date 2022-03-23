@@ -2,10 +2,10 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"net/http"
 	"time"
 
-	"github.com/Jonss/jupiter-bank-server/pkg/domain/rest"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/user"
 	"github.com/google/uuid"
 )
@@ -38,18 +38,16 @@ func (s *Server) Signup() http.HandlerFunc {
 
 		if err != nil {
 			if err == user.ErrUserExists {
-				rest.JsonResponse(w, http.StatusConflict, err.Error())
+				rest.JsonResponse(w, http.StatusUnprocessableEntity, rest.UserExists)
 				return
 			}
-			rest.JsonResponse(w, http.StatusInternalServerError, nil)
+			rest.JsonResponse(w, http.StatusInternalServerError, rest.UnexpectedError)
 			return
 		}
 
-		response := createUserResponse{
+		rest.JsonResponse(w, http.StatusCreated, createUserResponse{
 			ExternalID: u.ExternalID,
 			CreatedAt:  u.CreatedAt,
-		}
-
-		rest.JsonResponse(w, http.StatusCreated, response)
+		})
 	}
 }
