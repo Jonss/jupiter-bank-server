@@ -22,7 +22,8 @@
 - [x]- create function to handle json response
 - [x]- test handlers
 - [x]- Implement validation
-- [ ]- Create migration to add indexes on users table
+- [x]- Create migration to add indexes on users table
+
 ### Security
 - [ ]- Create "tenants" table, for check if request is allowed to perform changes on server.
 - [ ]- Create middleware to handle base64 token using secret, key from tenant on open endpoints.
