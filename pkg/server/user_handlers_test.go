@@ -13,6 +13,8 @@ import (
 )
 
 func TestSignup_Success(t *testing.T) {
+	validator, _ := rest.NewValidator()
+
 	testCases := []struct {
 		name           string
 		requestBody    string
@@ -34,7 +36,7 @@ func TestSignup_Success(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			srv := NewServer(mux.NewRouter(), tc.userService)
+			srv := NewServer(mux.NewRouter(), validator, tc.userService)
 			srv.Routes()
 
 			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
@@ -51,6 +53,8 @@ func TestSignup_Success(t *testing.T) {
 }
 
 func TestSignup_Error(t *testing.T) {
+	validator, _ := rest.NewValidator()
+
 	testCases := []struct {
 		name              string
 		requestBody       string
@@ -71,10 +75,49 @@ func TestSignup_Error(t *testing.T) {
 			wantStatusCode:    http.StatusUnprocessableEntity,
 			wantErrorResponse: rest.UserExists,
 		},
+		{
+			name: "should get error response when request body is empty",
+			requestBody: `{}`,
+			userService:    &userServiceMock{},
+			wantStatusCode: http.StatusBadRequest,
+			wantErrorResponse: rest.NewErrorResponses(
+				rest.NewValidationError("fullname is a required field"),
+				rest.NewValidationError("email is a required field"),
+				rest.NewValidationError("password is a required field"),
+			),
+		},
+		{
+			name: "should get error response when request body fields are invalid",
+			requestBody: `{
+				"fullname": "Eu",
+				"email": "a-invalid-email#jupiterbank.com",
+				"password": "12"
+			}`,
+			userService:    &userServiceMock{},
+			wantStatusCode: http.StatusBadRequest,
+			wantErrorResponse: rest.NewErrorResponses(
+				rest.NewValidationError("fullname must be at least 3 characters in length"),
+				rest.NewValidationError("email must be a valid email address"),
+				rest.NewValidationError("password must be at least 6 characters in length"),
+			),
+		},
+		{
+			name: "should get error response when password is fields are invalid",
+			requestBody: `{
+				"fullname": "Jupiter Stein",
+				"email": "a-valid-email@jupiterbank.com",
+				"password": "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"
+			}`,
+			userService:    &userServiceMock{},
+			wantStatusCode: http.StatusBadRequest,
+			wantErrorResponse: rest.NewErrorResponses(
+				rest.NewValidationError("password must be at maximum 100 characters in length"),
+			),
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			srv := NewServer(mux.NewRouter(), tc.userService)
+			srv := NewServer(mux.NewRouter(), validator, tc.userService)
 			srv.Routes()
 
 			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
@@ -98,12 +141,13 @@ func TestSignup_Error(t *testing.T) {
 				t.Fatal("unexpected error unmarshalling response body", err)
 			}
 
-			if errorResponse.Errors[0].Message != tc.wantErrorResponse.Errors[0].Message {
-				t.Fatalf("POST /sign-up. want error message  %s, got %s", tc.wantErrorResponse.Errors[0].Message, errorResponse.Errors[0].Message)
-			}
-
-			if errorResponse.Errors[0].Code != tc.wantErrorResponse.Errors[0].Code {
-				t.Fatalf("POST /sign-up. want error code %s, got %s", tc.wantErrorResponse.Errors[0].Code, errorResponse.Errors[0].Code)
+			for i, errResp := range errorResponse.Errors {
+				if tc.wantErrorResponse.Errors[i].Message != errResp.Message {
+					t.Fatalf("POST /sign-up. want error message %s, got %s", tc.wantErrorResponse.Errors[i].Message, errResp.Message)
+				}
+				if tc.wantErrorResponse.Errors[i].Code != errResp.Code {
+					t.Fatalf("POST /sign-up. want error code %s, got %s", tc.wantErrorResponse.Errors[i].Code, errResp.Code)
+				}
 			}
 		})
 	}

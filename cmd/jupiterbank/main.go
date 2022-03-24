@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"log"
 	"net/http"
 
@@ -33,8 +34,13 @@ func main() {
 	q := db.New(conn)
 
 	router := mux.NewRouter()
+	validator, err := rest.NewValidator()
+	if err != nil {
+		log.Fatal(err)
+	}
 	userDomain := user.NewUserService(q)
-	srv := server.NewServer(router, userDomain)
+
+	srv := server.NewServer(router, validator, userDomain)
 	srv.Routes() // start routes
 
 	fmt.Printf("Jupiter bank server running on [%s]. Env: [%s]", cfg.Port, cfg.Env)

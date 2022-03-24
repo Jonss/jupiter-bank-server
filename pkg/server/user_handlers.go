@@ -30,6 +30,12 @@ func (s *Server) Signup() http.HandlerFunc {
 			return
 		}
 
+		err := s.restValidator.Validator.Struct(req)
+		if err != nil {
+			rest.ValidateRequestBody(err, w, s.restValidator.Translator)
+			return
+		}
+
 		u, err := s.userService.CreateUser(ctx, user.CreateUseParams{
 			Fullname: req.Fullname,
 			Email:    req.Email,
@@ -51,3 +57,4 @@ func (s *Server) Signup() http.HandlerFunc {
 		})
 	}
 }
+
