@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"github.com/Jonss/jupiter-bank-server/pkg/db"
+	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/basic_auth"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/user"
 	"github.com/google/uuid"
 	"time"
@@ -25,3 +26,11 @@ func (q *userServiceMock) CreateUser(_ context.Context, arg user.CreateUseParams
 		CreatedAt:    time.Now(),
 	}, nil
 }
+
+type basicAuthMock struct {
+}
+
+func (d *basicAuthMock) FetchAppClient(_ context.Context, _ basic_auth.FetchAppClientParams) (bool, error) {
+	return true, nil
+}
+

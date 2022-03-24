@@ -1,4 +1,4 @@
-package token
+package basic_auth
 
 import (
 	"encoding/base64"

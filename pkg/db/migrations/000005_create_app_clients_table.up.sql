@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS app_clients (
     api_key VARCHAR UNIQUE NOT NULL,
     secret VARCHAR UNIQUE NOT NULL,
     created_at timestamp   NOT NULL DEFAULT(now())
-)
+);
 
 CREATE INDEX app_clients_api_key_idx ON app_clients (api_key);
-CREATE INDEX app_clients_secret_idx ON app_clients (secret)
+CREATE INDEX app_clients_secret_idx ON app_clients (secret);

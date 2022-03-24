@@ -1,4 +1,4 @@
-package token
+package basic_auth
 
 import (
 	"encoding/base64"
@@ -14,9 +14,9 @@ func TestDecodeBase64Token(t *testing.T) {
 	}
 	testsCases := []struct {
 		name         string
-		args         args
-		want         Base64Token
-		wantErr      bool
+		args    args
+		want    Base64Token
+		wantErr bool
 		errorMessage string
 	}{
 		{
