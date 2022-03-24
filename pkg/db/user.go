@@ -88,3 +88,26 @@ func (q *Queries) FetchUserByEmail(ctx context.Context, email string) (*User, er
 
 	return &u, nil
 }
+
+const checkUserExistsByEmailQuery = `
+	SELECT 
+		id
+	FROM users where email = $1;
+`
+
+
+func (q *Queries) CheckUserExistsByEmail(ctx context.Context, email string) (bool, error) {
+	var ID int
+	row := q.db.QueryRowContext(ctx, checkUserExistsByEmailQuery, email)
+	err := row.Scan(
+		&ID,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return ID > 0, nil
+}
