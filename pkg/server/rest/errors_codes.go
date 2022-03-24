@@ -3,9 +3,10 @@ package rest
 import "strings"
 
 const (
-	CodeValidation1        = "VAL-0001"  // general
+	CodeValidation1           = "VAL-0001"  // validation
 	CodeUser1          string = "USER-0001" // user
-	CodeUnexpected9999        = "J-9999"  // general
+	CodeUser2          string = "USER-0002" // user unauthorized
+	CodeUnexpected9999        = "J-9999"    // general
 )
 
 func NewErrorResponses(errors ...ErrorResponse) ErrorResponses {
@@ -22,3 +23,5 @@ func NewValidationError(message string) ErrorResponse {
 
 var UserExists = NewErrorResponses(ErrorResponse{Code: CodeUser1, Message: "user already exists"})
 var UnexpectedError = NewErrorResponses(ErrorResponse{Code: CodeUnexpected9999, Message: "unexpected error occurred"})
+var Unauthorized = NewErrorResponses(ErrorResponse{Code: CodeUser2, Message: "unauthorized"})
+var AuthorizationIsInvalid = NewErrorResponses(ErrorResponse{Code: CodeUser2, Message: "Authorization header is invalid"})

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/basic_auth"
 	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"log"
 	"net/http"
@@ -38,11 +39,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	userDomain := user.NewUserService(q)
+	userService := user.NewUserService(q)
+	basicAuthService := basic_auth.NewBasicAuthService(q)
 
-	srv := server.NewServer(router, validator, userDomain)
+	srv := server.NewServer(router, validator, userService, basicAuthService)
 	srv.Routes() // start routes
 
-	fmt.Printf("Jupiter bank server running on [%s]. Env: [%s]", cfg.Port, cfg.Env)
+	fmt.Println(fmt.Sprintf("Jupiter bank server running on [%s]. Env: [%s]", cfg.Port, cfg.Env))
 	log.Fatal(http.ListenAndServe(":"+cfg.Port, router))
 }

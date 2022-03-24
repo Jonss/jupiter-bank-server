@@ -16,10 +16,11 @@ func TestSignup_Success(t *testing.T) {
 	validator, _ := rest.NewValidator()
 
 	testCases := []struct {
-		name           string
-		requestBody    string
-		userService    user.Service
-		wantStatusCode int
+		name               string
+		requestBody        string
+		authorizationToken string
+		userService        user.Service
+		wantStatusCode     int
 	}{
 		{
 			name: "should signup successfully",
@@ -30,16 +31,18 @@ func TestSignup_Success(t *testing.T) {
 				"email": "jupiter.stein@jupiterbank.com"
 			}
 			`,
-			userService:    &userServiceMock{},
-			wantStatusCode: http.StatusCreated,
+			userService:        &userServiceMock{},
+			authorizationToken: "Basic banana",
+			wantStatusCode:     http.StatusCreated,
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			srv := NewServer(mux.NewRouter(), validator, tc.userService)
+			srv := NewServer(mux.NewRouter(), validator, tc.userService, &basicAuthMock{})
 			srv.Routes()
 
 			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
+			r.Header.Add("Authorization", tc.authorizationToken)
 			w := httptest.NewRecorder()
 			srv.router.ServeHTTP(w, r)
 
@@ -56,11 +59,12 @@ func TestSignup_Error(t *testing.T) {
 	validator, _ := rest.NewValidator()
 
 	testCases := []struct {
-		name              string
-		requestBody       string
-		userService       user.Service
-		wantStatusCode    int
-		wantErrorResponse rest.ErrorResponses
+		name               string
+		requestBody        string
+		userService        user.Service
+		wantStatusCode     int
+		authorizationToken string
+		wantErrorResponse  rest.ErrorResponses
 	}{
 		{
 			name: "should not signup when user already exists",
@@ -71,13 +75,15 @@ func TestSignup_Error(t *testing.T) {
 				"email": "existing.user@jupiterbank.com"
 			}
 			`,
+			authorizationToken: "Basic banana",
 			userService:       &userServiceMock{user.ErrUserExists},
 			wantStatusCode:    http.StatusUnprocessableEntity,
 			wantErrorResponse: rest.UserExists,
 		},
 		{
-			name: "should get error response when request body is empty",
-			requestBody: `{}`,
+			name:           "should get error response when request body is empty",
+			requestBody:    `{}`,
+			authorizationToken: "Basic banana",
 			userService:    &userServiceMock{},
 			wantStatusCode: http.StatusBadRequest,
 			wantErrorResponse: rest.NewErrorResponses(
@@ -93,6 +99,7 @@ func TestSignup_Error(t *testing.T) {
 				"email": "a-invalid-email#jupiterbank.com",
 				"password": "12"
 			}`,
+			authorizationToken: "Basic banana",
 			userService:    &userServiceMock{},
 			wantStatusCode: http.StatusBadRequest,
 			wantErrorResponse: rest.NewErrorResponses(
@@ -108,6 +115,7 @@ func TestSignup_Error(t *testing.T) {
 				"email": "a-valid-email@jupiterbank.com",
 				"password": "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"
 			}`,
+			authorizationToken: "Basic banana",
 			userService:    &userServiceMock{},
 			wantStatusCode: http.StatusBadRequest,
 			wantErrorResponse: rest.NewErrorResponses(
@@ -117,10 +125,11 @@ func TestSignup_Error(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			srv := NewServer(mux.NewRouter(), validator, tc.userService)
+			srv := NewServer(mux.NewRouter(), validator, tc.userService, &basicAuthMock{})
 			srv.Routes()
 
 			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
+			r.Header.Add("Authorization", tc.authorizationToken)
 			w := httptest.NewRecorder()
 			srv.router.ServeHTTP(w, r)
 
