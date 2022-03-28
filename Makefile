@@ -18,3 +18,6 @@ env-down:
 
 new-migration:
 	migrate create -ext sql -dir pkg/db/migrations -seq $(name)
+
+cover:
+	go tool cover -html=coverage.ou

@@ -81,17 +81,18 @@ func TestCreateUser(t *testing.T) {
 						t.Fatalf("unexpected error message. want %v, got %v", tc.errorMessage, dbErr.Message)
 					}
 				}
-			} else {
-				if user.Fullname != tc.arg.Fullname {
-					t.Fatalf("unexpected fullname. want %v, got %v", tc.arg.Fullname, user.Fullname)
-				}
-				if user.Email != tc.arg.Email {
-					t.Fatalf("unexpected email. want %v, got %v", tc.arg.Email, user.Email)
-				}
+				return
+			}
 
-				if user.ID == 0 {
-					t.Fatalf("unexpected ID. got %d", user.ID)
-				}
+			if user.Fullname != tc.arg.Fullname {
+				t.Fatalf("unexpected fullname. want %v, got %v", tc.arg.Fullname, user.Fullname)
+			}
+			if user.Email != tc.arg.Email {
+				t.Fatalf("unexpected email. want %v, got %v", tc.arg.Email, user.Email)
+			}
+
+			if user.ID == 0 {
+				t.Fatalf("unexpected ID. got %d", user.ID)
 			}
 		})
 	}
