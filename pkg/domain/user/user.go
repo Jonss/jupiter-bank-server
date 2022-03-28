@@ -14,7 +14,11 @@ type CreateUseParams struct {
 	Password string
 }
 
-var ErrUserExists = errors.New("error user already exists")
+var (
+	ErrUserExists      = errors.New("error user already exists")
+	ErrPasswordInvalid = errors.New("error password is invalid")
+	ErrUserIsDisabled  = errors.New("error user is disabled")
+)
 
 func (d *service) CreateUser(ctx context.Context, arg CreateUseParams) (*db.User, error) {
 	exists, err := d.queries.CheckUserExistsByEmail(ctx, arg.Email)
@@ -45,5 +49,32 @@ func (d *service) CreateUser(ctx context.Context, arg CreateUseParams) (*db.User
 		return nil, err
 	}
 
+	return user, nil
+}
+
+func (s *service) FetchUserByEmailAndPassword(ctx context.Context, email, password string) (*db.User, error) {
+	user, err := s.queries.FetchUserByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	err = CheckPassword(user.PasswordHash, password)
+	if err != nil {
+		return nil, ErrPasswordInvalid
+	}
+	if !user.IsActive {
+		return nil, ErrUserIsDisabled
+	}
+
+	return user, nil
+}
+
+func (s *service) GetUserByID(ctx context.Context, userID uint64) (*db.User, error) {
+	user, err := s.queries.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	if !user.IsActive {
+		return nil, ErrUserIsDisabled
+	}
 	return user, nil
 }

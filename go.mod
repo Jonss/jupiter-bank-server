@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	aidanwoods.dev/go-paseto v1.0.1 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/Microsoft/hcsshim v0.8.21 // indirect
 	github.com/bxcodec/faker/v3 v3.8.0 // indirect
@@ -65,5 +66,5 @@ require (
 	github.com/opencontainers/runc v1.1.0 // indirect
 	github.com/spf13/viper v1.10.1
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
-	golang.org/x/sys v0.0.0-20220317061510-51cd9980dadf // indirect
+	golang.org/x/sys v0.0.0-20220327210214-530d0810a4d0 // indirect
 )

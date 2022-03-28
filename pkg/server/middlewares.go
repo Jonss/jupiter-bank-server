@@ -7,9 +7,11 @@ import (
 	"strings"
 )
 
+const authorization = "Authorization"
+
 func (s *Server) AppClientMiddleware(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		authorization := r.Header.Get("Authorization")
+		authorization := r.Header.Get(authorization)
 		if authorization == "" {
 			rest.JsonResponse(w, http.StatusUnauthorized, rest.AuthorizationIsInvalid)
 			return
@@ -32,8 +34,15 @@ func (s *Server) AppClientMiddleware(next http.Handler) http.HandlerFunc {
 	}
 }
 
-func PrivateRouteMiddleware(next http.Handler) http.HandlerFunc {
+func (s *Server) PrivateRouteMiddleware(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		hex := r.Header.Get("x-auth-hex")
+		token := r.Header.Get(authorization)
+		err := s.pasetoAuthService.VerifyUser(r.Context(), token, hex)
+		if err != nil {
+			rest.JsonResponse(w, http.StatusUnauthorized, rest.Unauthorized)
+			return
+		}
 		next.ServeHTTP(w, r)
 	}
 }

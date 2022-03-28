@@ -4,6 +4,7 @@ import "strings"
 
 const (
 	CodeValidation1           = "VAL-0001"  // validation
+	CodeAuth1                 = "AUTH-0001" // Authentication
 	CodeUser1          string = "USER-0001" // user
 	CodeUser2          string = "USER-0002" // user unauthorized
 	CodeUnexpected9999        = "J-9999"    // general

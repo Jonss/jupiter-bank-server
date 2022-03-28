@@ -82,6 +82,7 @@ func (q *Queries) FetchUserByEmail(ctx context.Context, email string) (*User, er
 		&u.CreatedAt,
 		&u.UpdatedAt,
 	)
+	// TODO: fix it
 	if err == sql.ErrNoRows {
 		return nil, err
 	}
@@ -94,8 +95,6 @@ const checkUserExistsByEmailQuery = `
 		id
 	FROM users where email = $1;
 `
-
-
 func (q *Queries) CheckUserExistsByEmail(ctx context.Context, email string) (bool, error) {
 	var ID int
 	row := q.db.QueryRowContext(ctx, checkUserExistsByEmailQuery, email)
@@ -110,4 +109,33 @@ func (q *Queries) CheckUserExistsByEmail(ctx context.Context, email string) (boo
 	}
 
 	return ID > 0, nil
+}
+
+const fetchUserByIDQuery = `
+	SELECT 
+		id, external_id, fullname,
+		email, password_hash, pin, 
+		tax_id, is_active,
+		created_at, updated_at
+	FROM users where id = $1;
+`
+func (q *Queries) GetUserByID(ctx context.Context, ID uint64) (*User, error) {
+	row := q.db.QueryRowContext(ctx, fetchUserByIDQuery, ID)
+	var u User
+	err := row.Scan(
+		&u.ID,
+		&u.ExternalID,
+		&u.Fullname,
+		&u.Email,
+		&u.PasswordHash,
+		&u.Pin,
+		&u.TaxID,
+		&u.IsActive,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &u, nil
 }

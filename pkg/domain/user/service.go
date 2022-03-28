@@ -15,6 +15,8 @@ func NewUserService(q db.Querier) *service {
 
 type Service interface {
 	CreateUser(ctx context.Context, arg CreateUseParams) (*db.User, error)
+	FetchUserByEmailAndPassword(ctx context.Context, email, password string) (*db.User, error)
+	GetUserByID(ctx context.Context, userID uint64)(*db.User, error)
 }
 
 var _ Service = (*service)(nil)
