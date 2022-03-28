@@ -30,9 +30,9 @@
 
 ### Authentication and Authorization
 
-- [ ] - Implement Login mechanism [PASETO]
-- [ ] - Create endpoint to create token
-- [ ] - Create middleware to handle tokens
+- [x] - Implement Login mechanism [PASETO]
+- [x] - Create endpoint to create token
+- [x] - Create middleware to handle tokens
 - [ ] - Create endpoint to get user profile protected by authentication
 - [ ] - Test tokens
 - [ ] - Improve get user profile, allowing only user to get its own profile
