@@ -5,13 +5,14 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/bxcodec/faker/v3"
+	"math"
 	"testing"
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
 
-func createUser(t *testing.T, uuid, fullname, email string) {
+func createUser(t *testing.T, uuid, fullname, email string) uint64 {
 	insertQuery := fmt.Sprintf(`
 	INSERT INTO users(
 		external_id,
@@ -23,12 +24,15 @@ func createUser(t *testing.T, uuid, fullname, email string) {
 		'%s',
 		'%s',
 		'a_hashed_password'
-	)`, uuid, fullname, email)
+	) returning id;`, uuid, fullname, email)
 
-	_, err := testQueries.db.ExecContext(context.Background(), insertQuery)
+	var ID uint64
+	rows := testQueries.db.QueryRowContext(context.Background(), insertQuery)
+	err := rows.Scan(&ID)
 	if err != nil {
 		t.Fatalf("unexpected error inserting existing user. error=(%v)", err)
 	}
+	return ID
 }
 
 func TestCreateUser(t *testing.T) {
@@ -170,6 +174,56 @@ func TestFetchUserByEmail(t *testing.T) {
 
 				if tc.want.ExternalID != got.ExternalID {
 					t.Fatalf("FetchUserByEmail. want externalID %v got %v", tc.want.ExternalID, got.ExternalID)
+				}
+			}
+		})
+	}
+}
+
+func TestGetUserByID(t *testing.T) {
+	email := faker.Email()
+	fullname := faker.FirstName() + " " + faker.LastName()
+	newUuid := uuid.New()
+	userID := createUser(t, newUuid.String(), fullname, email)
+
+	testCases := []struct {
+		name   string
+		userID uint64
+		err    error
+	}{
+		{
+			name:   "should get user by id when exists",
+			userID: userID,
+		},
+		{
+			name:   "should get error when user by id does not exists",
+			userID: math.MaxInt,
+			err:    sql.ErrNoRows,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := testQueries.GetUserByID(context.Background(), tc.userID)
+			if err != tc.err {
+				t.Fatal("unexpected error", err)
+			}
+
+			if tc.err == nil {
+				if tc.userID != got.ID {
+					t.Fatalf("GetUserByID() want %v got %v", tc.userID, got.ID)
+				}
+
+				if email != got.Email {
+					t.Fatalf("GetUserByID() want %v got %v", email, got.Email)
+				}
+
+				if fullname != got.Fullname {
+					t.Fatalf("GetUserByID() want %v got %v", fullname, got.Fullname)
+				}
+
+				if newUuid != got.ExternalID {
+					t.Fatalf("GetUserByID() want %v got %v", newUuid, got.ExternalID)
 				}
 			}
 		})

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/basic_auth"
 	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 )
 
 const authorization = "Authorization"
+const userIDKey = "userID"
 
 func (s *Server) AppClientMiddleware(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -38,11 +40,13 @@ func (s *Server) PrivateRouteMiddleware(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		hex := r.Header.Get("x-auth-hex")
 		token := r.Header.Get(authorization)
-		err := s.pasetoAuthService.VerifyUser(r.Context(), token, hex)
+		user, err := s.pasetoAuthService.VerifyUser(r.Context(), token, hex)
 		if err != nil {
 			rest.JsonResponse(w, http.StatusUnauthorized, rest.Unauthorized)
 			return
 		}
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), userIDKey, user.ID)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }

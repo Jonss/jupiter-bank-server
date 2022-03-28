@@ -2,6 +2,7 @@ package paseto_auth
 
 import (
 	"context"
+	"github.com/Jonss/jupiter-bank-server/pkg/db"
 	"strconv"
 )
 
@@ -20,18 +21,18 @@ func (s service) Login(ctx context.Context, email, password string) (PasetoToken
 		nil
 }
 
-func (s service) VerifyUser(ctx context.Context, token, hex string) error {
+func (s service) VerifyUser(ctx context.Context, token, hex string) (*db.User, error) {
 	userIDstr, err := DecryptToken(token, hex)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	userID, err := strconv.ParseUint(userIDstr, 10, 64)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	_, err = s.userService.GetUserByID(ctx, userID)
+	user, err := s.userService.GetUserByID(ctx, userID)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return user, nil
 }

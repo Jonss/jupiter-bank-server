@@ -15,5 +15,4 @@ func (s *Server) Routes() {
 	s.router.HandleFunc("/health", s.AppClientMiddleware(health())).Methods(http.MethodGet)
 	s.router.HandleFunc("/sign-up", s.AppClientMiddleware(s.Signup())).Methods(http.MethodPost)
 	s.router.HandleFunc("/sign-in", s.AppClientMiddleware(s.Authenticate())).Methods(http.MethodPost)
-	s.router.HandleFunc("/test", s.PrivateRouteMiddleware(health())).Methods(http.MethodPost) // todo - reove it
 }

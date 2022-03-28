@@ -48,6 +48,6 @@ func (m *pasetoAuthMock) Login(ctx context.Context, email, password string) (pas
 	return paseto_auth.PasetoToken{}, nil
 }
 
-func (m *pasetoAuthMock) VerifyUser(ctx context.Context, token, hex string) error {
-	return nil
+func (m *pasetoAuthMock) VerifyUser(ctx context.Context, token, hex string) (*db.User, error) {
+	return nil, nil
 }

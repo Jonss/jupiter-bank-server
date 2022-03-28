@@ -12,7 +12,6 @@ type Validator struct {
 	Translator ut.Translator
 }
 
-
 func NewValidator() (*Validator, error) {
 	uni := ut.New(en.New())
 	translation, _ := uni.GetTranslator("en")
