@@ -47,15 +47,16 @@
 - [ ] - Create transfer feature [TODO - add steps]
 - [ ] - Save transfer
 
-### Messaging
-- [ ] - Integrate with email provider [sendgrid?]
-- [ ] - Integrate with push notification provider (for web)
-
 ### Summary
 
 - [ ] - Provide endpoint with balance and History (https://www.behance.net/gallery/53357679/UniBank)
+
+### Messaging
+- [ ] - Integrate with email provider [sendgrid?]
+- [ ] - Integrate with push notification provider (for web)
 
 ** Test all features
 
 - Database tests will use testcontainers, testing actual queries
 - HTTP route tests use mocks 
+- services tests will use mocks
