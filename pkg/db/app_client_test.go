@@ -15,10 +15,10 @@ func TestQueries_FetchAppClient(t *testing.T) {
 	createAppClient(t, appName, key, secret)
 
 	tests := []struct {
-		name    string
-		arg     FetchAppClientParams
-		want    *AppClient
-		wantErr error
+		name string
+		arg  FetchAppClientParams
+		want *AppClient
+		err  error
 	}{
 		{
 			name: "should fetch app client",
@@ -32,8 +32,8 @@ func TestQueries_FetchAppClient(t *testing.T) {
 			},
 		},
 		{
-			name:    "should get error when app client does not exists",
-			wantErr: sql.ErrNoRows,
+			name: "should get error when app client does not exists",
+			err:  sql.ErrNoRows,
 			arg: FetchAppClientParams{
 				"non-existing-key", "non-existing-secret",
 			},
@@ -42,11 +42,11 @@ func TestQueries_FetchAppClient(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			got, err := testQueries.FetchAppClient(context.Background(), tc.arg)
-			if err != tc.wantErr {
-				t.Errorf("FetchAppClient() error = %v, wantErr %v", err, tc.wantErr)
+			if err != tc.err {
+				t.Errorf("FetchAppClient() error = %v, wantErr %v", err, tc.err)
 				return
 			}
-			if tc.wantErr != nil {
+			if tc.err != nil {
 				return
 			}
 

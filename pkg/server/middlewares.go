@@ -27,7 +27,11 @@ func (s *Server) AppClientMiddleware(next http.Handler) http.HandlerFunc {
 		ok, err := s.basicAuthService.FetchAppClient(r.Context(), basic_auth.FetchAppClientParams{
 			Token: token,
 		})
-		if err != nil || !ok {
+		if err != nil {
+			rest.JsonResponse(w, http.StatusInternalServerError, rest.UnexpectedError)
+			return
+		}
+		if !ok {
 			rest.JsonResponse(w, http.StatusUnauthorized, rest.Unauthorized)
 			return
 		}

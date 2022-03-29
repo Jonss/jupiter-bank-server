@@ -38,7 +38,7 @@ func TestSignup_Success(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			srv := NewServer(mux.NewRouter(), validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
+			srv := NewServer(mux.NewRouter(), fakeConfig, validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
 			srv.Routes()
 
 			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
@@ -76,7 +76,7 @@ func TestSignup_Error(t *testing.T) {
 			}
 			`,
 			authorizationToken: "Basic banana",
-			userService:        &userServiceMock{user.ErrUserExists},
+			userService:        &userServiceMock{err: user.ErrUserExists},
 			wantStatusCode:     http.StatusUnprocessableEntity,
 			wantErrorResponse:  rest.UserExists,
 		},
@@ -125,7 +125,7 @@ func TestSignup_Error(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			srv := NewServer(mux.NewRouter(), validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
+			srv := NewServer(mux.NewRouter(), fakeConfig, validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
 			srv.Routes()
 
 			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))

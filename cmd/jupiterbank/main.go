@@ -46,6 +46,7 @@ func main() {
 
 	srv := server.NewServer(
 		router,
+		cfg,
 		validator,
 		userService,
 		basicAuthService,

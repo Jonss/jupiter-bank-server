@@ -20,4 +20,4 @@ new-migration:
 	migrate create -ext sql -dir pkg/db/migrations -seq $(name)
 
 cover:
-	go tool cover -html=coverage.ou
+	go tool cover -html=coverage.out
