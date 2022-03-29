@@ -41,7 +41,7 @@ func TestSignup_Success(t *testing.T) {
 			srv := NewServer(mux.NewRouter(), fakeConfig, validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
 			srv.Routes()
 
-			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
+			r := httptest.NewRequest(http.MethodPost, "/api/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
 			r.Header.Add("Authorization", tc.authorizationToken)
 			w := httptest.NewRecorder()
 			srv.router.ServeHTTP(w, r)
@@ -49,7 +49,7 @@ func TestSignup_Success(t *testing.T) {
 			result := w.Result()
 			gotStatusCode := result.StatusCode
 			if tc.wantStatusCode != gotStatusCode {
-				t.Fatalf("POST /sign-up . status code. want %d, got %d", tc.wantStatusCode, gotStatusCode)
+				t.Fatalf("POST /api/sign-up . status code. want %d, got %d", tc.wantStatusCode, gotStatusCode)
 			}
 		})
 	}
@@ -128,7 +128,7 @@ func TestSignup_Error(t *testing.T) {
 			srv := NewServer(mux.NewRouter(), fakeConfig, validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
 			srv.Routes()
 
-			r := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
+			r := httptest.NewRequest(http.MethodPost, "/api/sign-up", bytes.NewBuffer([]byte(tc.requestBody)))
 			r.Header.Add("Authorization", tc.authorizationToken)
 			w := httptest.NewRecorder()
 			srv.router.ServeHTTP(w, r)
@@ -136,7 +136,7 @@ func TestSignup_Error(t *testing.T) {
 			result := w.Result()
 			gotStatusCode := result.StatusCode
 			if tc.wantStatusCode != gotStatusCode {
-				t.Fatalf("POST /sign-up . status code. want %d, got %d", tc.wantStatusCode, gotStatusCode)
+				t.Fatalf("POST /api/sign-up . status code. want %d, got %d", tc.wantStatusCode, gotStatusCode)
 			}
 
 			resultBody, err := ioutil.ReadAll(result.Body)
@@ -152,10 +152,10 @@ func TestSignup_Error(t *testing.T) {
 
 			for i, errResp := range errorResponse.Errors {
 				if tc.wantErrorResponse.Errors[i].Message != errResp.Message {
-					t.Fatalf("POST /sign-up. want error message %s, got %s", tc.wantErrorResponse.Errors[i].Message, errResp.Message)
+					t.Fatalf("POST /api/sign-up. want error message %s, got %s", tc.wantErrorResponse.Errors[i].Message, errResp.Message)
 				}
 				if tc.wantErrorResponse.Errors[i].Code != errResp.Code {
-					t.Fatalf("POST /sign-up. want error code %s, got %s", tc.wantErrorResponse.Errors[i].Code, errResp.Code)
+					t.Fatalf("POST /api/sign-up. want error code %s, got %s", tc.wantErrorResponse.Errors[i].Code, errResp.Code)
 				}
 			}
 		})
