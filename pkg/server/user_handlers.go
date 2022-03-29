@@ -58,3 +58,32 @@ func (s *Server) Signup() http.HandlerFunc {
 	}
 }
 
+func (s *Server) Profile() http.HandlerFunc {
+	type response struct {
+		ExternalID uuid.UUID `json:"external_id"`
+		Fullname   string    `json:"fullname"`
+		Email      string    `json:"email"`
+		CreatedAt  time.Time `json:"created_at"`
+		TaxID      *string   `json:"tax_id"`
+		IsComplete bool      `json:"is_complete"`
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := rest.UserIDFromRequest(r)
+
+		u, err := s.userService.GetUserByID(r.Context(), userID)
+		if err != nil {
+			rest.JsonResponse(w, http.StatusInternalServerError, rest.UnexpectedError)
+			return
+		}
+		resp := response{
+			ExternalID: u.ExternalID,
+			Fullname:   u.Fullname,
+			Email:      u.Email,
+			CreatedAt:  u.CreatedAt,
+			TaxID:      u.TaxID,
+			IsComplete: u.IsComplete(),
+		}
+		rest.JsonResponse(w, http.StatusOK, resp)
+	}
+
+}

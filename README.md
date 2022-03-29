@@ -15,27 +15,26 @@
 
 ### Users
 
-- [x]- Create user entity
-- [x]- create migration
-- [x]- save in db
-- [x]- hash password
-- [x]- create function to handle json response
-- [x]- test handlers
-- [x]- Implement validation
-- [x]- Create migration to add indexes on users table
+- [x] - Create user entity
+- [x] - create migration
+- [x] - save in db
+- [x] - hash password
+- [x] - create function to handle json response
+- [x] - test handlers
+- [x] - Implement validation
+- [x] - Create migration to add indexes on users table
 
 ### Security
-- [x]- Create "tenants" table, for check if request is allowed to perform changes on server.
-- [x]- Create middleware to handle base64 token using secret, key from tenant on open endpoints.
+- [x] - Create "tenants" table, for check if request is allowed to perform changes on server.
+- [x] - Create middleware to handle base64 token using secret, key from tenant on open endpoints.
 
 ### Authentication and Authorization
 
 - [x] - Implement Login mechanism [PASETO]
 - [x] - Create endpoint to create token
 - [x] - Create middleware to handle tokens
-- [ ] - Create endpoint to get user profile protected by authentication
+- [x] - Create endpoint to get user profile protected by authentication
 - [ ] - Test tokens
-- [ ] - Improve get user profile, allowing only user to get its own profile
 
 ### Account
 

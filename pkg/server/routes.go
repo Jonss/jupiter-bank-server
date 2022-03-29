@@ -19,7 +19,8 @@ func (s *Server) health() http.HandlerFunc {
 }
 
 func (s *Server) Routes() {
-	s.router.HandleFunc("/health", s.AppClientMiddleware(s.health())).Methods(http.MethodGet)
-	s.router.HandleFunc("/sign-up", s.AppClientMiddleware(s.Signup())).Methods(http.MethodPost)
-	s.router.HandleFunc("/sign-in", s.AppClientMiddleware(s.Authenticate())).Methods(http.MethodPost)
+	s.router.HandleFunc("/api/health", s.AppClientMiddleware(s.health())).Methods(http.MethodGet)
+	s.router.HandleFunc("/api/sign-up", s.AppClientMiddleware(s.Signup())).Methods(http.MethodPost)
+	s.router.HandleFunc("/api/sign-in", s.AppClientMiddleware(s.Authenticate())).Methods(http.MethodPost)
+	s.router.HandleFunc("/api/profile", s.PrivateRouteMiddleware(s.Profile())).Methods(http.MethodGet)
 }

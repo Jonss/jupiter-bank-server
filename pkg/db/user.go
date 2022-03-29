@@ -22,6 +22,10 @@ type User struct {
 	UpdatedAt    time.Time
 }
 
+func (u User) IsComplete() bool {
+	return u.IsActive && u.TaxID != nil && u.Pin != nil
+}
+
 type CreateUserParams struct {
 	ID           uint64
 	ExternalID   uuid.UUID
@@ -95,6 +99,7 @@ const checkUserExistsByEmailQuery = `
 		id
 	FROM users where email = $1;
 `
+
 func (q *Queries) CheckUserExistsByEmail(ctx context.Context, email string) (bool, error) {
 	var ID int
 	row := q.db.QueryRowContext(ctx, checkUserExistsByEmailQuery, email)
@@ -119,6 +124,7 @@ const fetchUserByIDQuery = `
 		created_at, updated_at
 	FROM users where id = $1;
 `
+
 func (q *Queries) GetUserByID(ctx context.Context, ID uint64) (*User, error) {
 	row := q.db.QueryRowContext(ctx, fetchUserByIDQuery, ID)
 	var u User
