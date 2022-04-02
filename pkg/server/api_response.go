@@ -47,8 +47,9 @@ func apiResponse(w http.ResponseWriter, statusCode int, responseBody interface{}
 const (
 	CodeValidation1           = "VAL-0001"  // validation
 	CodeAuth1                 = "AUTH-0001" // Authentication
-	CodeUser1          string = "USER-0001" // user
+	CodeUser1          string = "USER-0001" // User already exists
 	CodeUser2          string = "USER-0002" // user unauthorized
+	CodeUser3          string = "USER-0003" // User does not exists
 	CodeUnexpected9999        = "J-9999"    // general
 )
 

@@ -15,6 +15,8 @@ func NewPasetoAuthService(userService user.Service) service {
 }
 
 type Service interface {
-	Login(ctx context.Context, email, password string) (PasetoToken, error)
+	Login(ctx context.Context, email, password string) (*PasetoToken, error)
 	VerifyUser(ctx context.Context, token, hex string) (*db.User, error)
 }
+
+var _ Service = (*service)(nil)

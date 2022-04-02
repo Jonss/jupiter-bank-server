@@ -26,8 +26,8 @@ func TestSignup_Success(t *testing.T) {
 			requestBody: `
 			{
 				"fullname": "Jupiter Stein",
-				"password": "123456789",
-				"email": "jupiter.stein@jupiterbank.com"
+				"email": "jupiter.stein@jupiterbank.com",
+				"password": "123456789"
 			}
 			`,
 			userService:        &userServiceMock{},

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 )
@@ -31,6 +32,13 @@ func (s *Server) Authenticate() http.HandlerFunc {
 		}
 		pasetoToken, err := s.pasetoAuthService.Login(ctx, req.Email, req.Password)
 		if err != nil {
+			if err == sql.ErrNoRows {
+				apiResponse(w, http.StatusNotFound, NewErrorResponses(ErrorResponse{
+					Code:    CodeUser3,
+					Message: err.Error(),
+				}))
+			}
+
 			apiResponse(w, http.StatusInternalServerError, NewErrorResponses(ErrorResponse{
 				Code:    CodeAuth1,
 				Message: err.Error(),

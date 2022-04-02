@@ -61,12 +61,23 @@ func (d *basicAuthMock) FetchAppClient(_ context.Context, _ basic_auth.FetchAppC
 	return true, nil
 }
 
-type pasetoAuthMock struct{}
+type pasetoAuthMock struct{
+	err error
+}
 
-func (m *pasetoAuthMock) Login(_ context.Context, email, password string) (paseto_auth.PasetoToken, error) {
-	return paseto_auth.PasetoToken{}, nil
+func (m *pasetoAuthMock) Login(_ context.Context, email, password string) (*paseto_auth.PasetoToken, error) {
+	if m.err != nil {
+		return nil, m.err
+	}
+	return &paseto_auth.PasetoToken{
+		SignedKey: uuid.NewString(),
+		PublicHex: uuid.NewString(),
+	}, nil
 }
 
 func (m *pasetoAuthMock) VerifyUser(_ context.Context, token, hex string) (*db.User, error) {
-	return nil, nil
+	if m.err != nil {
+		return nil, m.err
+	}
+	return &db.User{}, nil
 }

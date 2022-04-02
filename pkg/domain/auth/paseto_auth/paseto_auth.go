@@ -6,16 +6,16 @@ import (
 	"strconv"
 )
 
-func (s service) Login(ctx context.Context, email, password string) (PasetoToken, error) {
+func (s service) Login(ctx context.Context, email, password string) (*PasetoToken, error) {
 	user, err := s.userService.FetchUserByEmailAndPassword(ctx, email, password)
 	if err != nil {
-		return PasetoToken{}, err
+		return nil, err
 	}
 	token, err := CreateToken(user.ID)
 	if err != nil {
-		return PasetoToken{}, err
+		return nil, err
 	}
-	return PasetoToken{
+	return &PasetoToken{
 			SignedKey: token.SignedKey,
 			PublicHex: token.PublicHex},
 		nil
