@@ -2,7 +2,10 @@ package server
 
 import (
 	"bytes"
+	"context"
+	"database/sql"
 	"encoding/json"
+	"github.com/Jonss/jupiter-bank-server/pkg/db"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/user"
 	"github.com/gorilla/mux"
 	"io/ioutil"
@@ -11,7 +14,7 @@ import (
 	"testing"
 )
 
-func TestSignup_Success(t *testing.T) {
+func TestServerSignup_Success(t *testing.T) {
 	validator, _ := NewValidator()
 
 	testCases := []struct {
@@ -54,7 +57,7 @@ func TestSignup_Success(t *testing.T) {
 	}
 }
 
-func TestSignup_Error(t *testing.T) {
+func TestServerSignup_Error(t *testing.T) {
 	validator, _ := NewValidator()
 
 	testCases := []struct {
@@ -74,7 +77,7 @@ func TestSignup_Error(t *testing.T) {
 				"email": "existing.user@jupiterbank.com"
 			}
 			`,
-			authorizationToken: "Basic banana",
+			authorizationToken: "Basic auth",
 			userService:        &userServiceMock{err: user.ErrUserExists},
 			wantStatusCode:     http.StatusUnprocessableEntity,
 			wantErrorResponse:  UserExists,
@@ -98,7 +101,7 @@ func TestSignup_Error(t *testing.T) {
 				"email": "a-invalid-email#jupiterbank.com",
 				"password": "12"
 			}`,
-			authorizationToken: "Basic banana",
+			authorizationToken: "Basic auth",
 			userService:        &userServiceMock{},
 			wantStatusCode:     http.StatusBadRequest,
 			wantErrorResponse: NewErrorResponses(
@@ -114,7 +117,7 @@ func TestSignup_Error(t *testing.T) {
 				"email": "a-valid-email@jupiterbank.com",
 				"password": "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"
 			}`,
-			authorizationToken: "Basic banana",
+			authorizationToken: "Basic auth",
 			userService:        &userServiceMock{},
 			wantStatusCode:     http.StatusBadRequest,
 			wantErrorResponse: NewErrorResponses(
@@ -157,6 +160,45 @@ func TestSignup_Error(t *testing.T) {
 					t.Fatalf("POST /api/sign-up. want error code %s, got %s", tc.wantErrorResponse.Errors[i].Code, errResp.Code)
 				}
 			}
+		})
+	}
+}
+
+func TestServer_Profile(t *testing.T) {
+	validator, _ := NewValidator()
+
+	testCases := []struct {
+		name           string
+		userService    user.Service
+		wantStatusCode int
+	}{
+		{
+			name:           "should get user",
+			userService:    &userServiceMock{wantUser: &db.User{ID: 1}},
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "should not get user when user does not exists",
+			userService:    &userServiceMock{err: sql.ErrNoRows},
+			wantStatusCode: http.StatusInternalServerError,
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			r := httptest.NewRequest(http.MethodGet, "/api/users", nil)
+			w := httptest.NewRecorder()
+			ctx := context.WithValue(r.Context(), userIDKey, "1")
+			r.WithContext(ctx)
+			srv := NewServer(mux.NewRouter(), fakeConfig, validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
+			srv.Routes()
+
+			srv.router.ServeHTTP(w, r)
+
+			result := w.Result()
+			if tc.wantStatusCode != result.StatusCode {
+				t.Fatalf("POST /api/users. want %d, got %d", tc.wantStatusCode, result.StatusCode)
+			}
+
 		})
 	}
 }
