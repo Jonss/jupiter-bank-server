@@ -1,5 +1,13 @@
 # Jupiter Bank Server
 
+## About:
+
+## How to run locally [todo]?
+
+## How deploy works [todo]?
+
+## endpoints
+
 ## TODO:
 
 ### Hello world!
@@ -38,9 +46,12 @@
 
 ### Account
 
-- [ ] - Create account entity [TODO - add steps]
-- [ ] - Implement validation
-- [ ] - Funding user when account is created
+- [ ] - Create account entity
+- [ ] - Create migration. Should have type (SAVING), external_id, currency and more.
+- [ ] - Implement validation, to check type and currency.
+- [ ] - User cannot create an account for same currency and type. Ex.: new account of USD of type SAVING
+- [ ] - Create an endpoint to fund user account with a random number from 100 to 1000 of
+- [ ] - return accounts summary on profile
 
 ### Transfer
 - [ ] - Create transfer feature [TODO - add steps]
