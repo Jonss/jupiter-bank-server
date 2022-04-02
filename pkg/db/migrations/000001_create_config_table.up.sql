@@ -1,28 +1,28 @@
 CREATE TABLE IF NOT EXISTS configs
 (
     id
-    bigserial
-    PRIMARY
-    KEY,
+               bigserial
+        PRIMARY
+            KEY,
     key
-    varchar
-    NOT
-    NULL,
+               varchar
+                         NOT
+                             NULL,
     value
-    varchar
-    NOT
-    NULL,
+               varchar
+                         NOT
+                             NULL,
     created_at
-    timestamp
-    NOT
-    NULL
-    DEFAULT (
-    now
-(
-)),
+               timestamp
+                         NOT
+                             NULL
+                                  DEFAULT (
+                                      now
+                                          (
+                                          )),
     updated_at timestamp NOT NULL DEFAULT
-(
-    now
-(
-))
-    )
+                                      (
+                                          now
+                                              (
+                                              ))
+)
