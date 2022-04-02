@@ -16,8 +16,8 @@ func (s service) Login(ctx context.Context, email, password string) (PasetoToken
 		return PasetoToken{}, err
 	}
 	return PasetoToken{
-		SignedKey: token.SignedKey,
-		PublicHex: token.PublicHex},
+			SignedKey: token.SignedKey,
+			PublicHex: token.PublicHex},
 		nil
 }
 

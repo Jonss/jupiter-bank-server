@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/user"
-	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
@@ -13,7 +12,7 @@ import (
 )
 
 func TestSignup_Success(t *testing.T) {
-	validator, _ := rest.NewValidator()
+	validator, _ := NewValidator()
 
 	testCases := []struct {
 		name               string
@@ -56,7 +55,7 @@ func TestSignup_Success(t *testing.T) {
 }
 
 func TestSignup_Error(t *testing.T) {
-	validator, _ := rest.NewValidator()
+	validator, _ := NewValidator()
 
 	testCases := []struct {
 		name               string
@@ -64,7 +63,7 @@ func TestSignup_Error(t *testing.T) {
 		userService        user.Service
 		wantStatusCode     int
 		authorizationToken string
-		wantErrorResponse  rest.ErrorResponses
+		wantErrorResponse  ErrorResponses
 	}{
 		{
 			name: "should not signup when user already exists",
@@ -78,7 +77,7 @@ func TestSignup_Error(t *testing.T) {
 			authorizationToken: "Basic banana",
 			userService:        &userServiceMock{err: user.ErrUserExists},
 			wantStatusCode:     http.StatusUnprocessableEntity,
-			wantErrorResponse:  rest.UserExists,
+			wantErrorResponse:  UserExists,
 		},
 		{
 			name:               "should get error response when request body is empty",
@@ -86,10 +85,10 @@ func TestSignup_Error(t *testing.T) {
 			authorizationToken: "Basic banana",
 			userService:        &userServiceMock{},
 			wantStatusCode:     http.StatusBadRequest,
-			wantErrorResponse: rest.NewErrorResponses(
-				rest.NewValidationError("fullname is a required field"),
-				rest.NewValidationError("email is a required field"),
-				rest.NewValidationError("password is a required field"),
+			wantErrorResponse: NewErrorResponses(
+				NewValidationError("fullname is a required field"),
+				NewValidationError("email is a required field"),
+				NewValidationError("password is a required field"),
 			),
 		},
 		{
@@ -102,10 +101,10 @@ func TestSignup_Error(t *testing.T) {
 			authorizationToken: "Basic banana",
 			userService:        &userServiceMock{},
 			wantStatusCode:     http.StatusBadRequest,
-			wantErrorResponse: rest.NewErrorResponses(
-				rest.NewValidationError("fullname must be at least 3 characters in length"),
-				rest.NewValidationError("email must be a valid email address"),
-				rest.NewValidationError("password must be at least 6 characters in length"),
+			wantErrorResponse: NewErrorResponses(
+				NewValidationError("fullname must be at least 3 characters in length"),
+				NewValidationError("email must be a valid email address"),
+				NewValidationError("password must be at least 6 characters in length"),
 			),
 		},
 		{
@@ -118,8 +117,8 @@ func TestSignup_Error(t *testing.T) {
 			authorizationToken: "Basic banana",
 			userService:        &userServiceMock{},
 			wantStatusCode:     http.StatusBadRequest,
-			wantErrorResponse: rest.NewErrorResponses(
-				rest.NewValidationError("password must be at maximum 100 characters in length"),
+			wantErrorResponse: NewErrorResponses(
+				NewValidationError("password must be at maximum 100 characters in length"),
 			),
 		},
 	}
@@ -144,7 +143,7 @@ func TestSignup_Error(t *testing.T) {
 				t.Fatal("unexpected error reading response body", err)
 			}
 
-			var errorResponse rest.ErrorResponses
+			var errorResponse ErrorResponses
 			err = json.Unmarshal(resultBody, &errorResponse)
 			if err != nil {
 				t.Fatal("unexpected error unmarshalling response body", err)

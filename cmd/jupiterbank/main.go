@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/basic_auth"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/paseto_auth"
-	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"log"
 	"net/http"
 
@@ -36,7 +35,7 @@ func main() {
 	q := db.New(conn)
 
 	router := mux.NewRouter()
-	validator, err := rest.NewValidator()
+	validator, err := server.NewValidator()
 	if err != nil {
 		log.Fatal(err)
 	}

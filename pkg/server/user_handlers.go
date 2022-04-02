@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"net/http"
 	"time"
 
@@ -26,13 +25,13 @@ func (s *Server) Signup() http.HandlerFunc {
 		ctx := r.Context()
 		var req createUserRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			rest.JsonResponse(w, http.StatusBadRequest, nil)
+			apiResponse(w, http.StatusBadRequest, nil)
 			return
 		}
 
 		err := s.restValidator.Validator.Struct(req)
 		if err != nil {
-			rest.ValidateRequestBody(err, w, s.restValidator.Translator)
+			ValidateRequestBody(err, w, s.restValidator.Translator)
 			return
 		}
 
@@ -44,14 +43,14 @@ func (s *Server) Signup() http.HandlerFunc {
 
 		if err != nil {
 			if err == user.ErrUserExists {
-				rest.JsonResponse(w, http.StatusUnprocessableEntity, rest.UserExists)
+				apiResponse(w, http.StatusUnprocessableEntity, UserExists)
 				return
 			}
-			rest.JsonResponse(w, http.StatusInternalServerError, rest.UnexpectedError)
+			apiResponse(w, http.StatusInternalServerError, UnexpectedError)
 			return
 		}
 
-		rest.JsonResponse(w, http.StatusCreated, createUserResponse{
+		apiResponse(w, http.StatusCreated, createUserResponse{
 			ExternalID: u.ExternalID,
 			CreatedAt:  u.CreatedAt,
 		})
@@ -68,11 +67,11 @@ func (s *Server) Profile() http.HandlerFunc {
 		IsComplete bool      `json:"is_complete"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		userID := rest.UserIDFromRequest(r)
+		userID := UserIDFromRequest(r)
 
 		u, err := s.userService.GetUserByID(r.Context(), userID)
 		if err != nil {
-			rest.JsonResponse(w, http.StatusInternalServerError, rest.UnexpectedError)
+			apiResponse(w, http.StatusInternalServerError, UnexpectedError)
 			return
 		}
 		resp := response{
@@ -83,7 +82,7 @@ func (s *Server) Profile() http.HandlerFunc {
 			TaxID:      u.TaxID,
 			IsComplete: u.IsComplete(),
 		}
-		rest.JsonResponse(w, http.StatusOK, resp)
+		apiResponse(w, http.StatusOK, resp)
 	}
 
 }

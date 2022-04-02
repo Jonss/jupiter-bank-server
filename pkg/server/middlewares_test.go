@@ -3,7 +3,6 @@ package server
 import (
 	"errors"
 	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/basic_auth"
-	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"github.com/gorilla/mux"
 	"net/http"
 	"net/http/httptest"
@@ -11,7 +10,7 @@ import (
 )
 
 func TestAppClientMiddleware(t *testing.T) {
-	validator, _ := rest.NewValidator()
+	validator, _ := NewValidator()
 
 	testCases := []struct {
 		name             string

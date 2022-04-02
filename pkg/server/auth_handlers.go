@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/Jonss/jupiter-bank-server/pkg/server/rest"
 	"net/http"
 )
 
@@ -21,19 +20,19 @@ func (s *Server) Authenticate() http.HandlerFunc {
 		ctx := r.Context()
 		var req request
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			rest.JsonResponse(w, http.StatusBadRequest, nil)
+			apiResponse(w, http.StatusBadRequest, nil)
 			return
 		}
 
 		err := s.restValidator.Validator.Struct(req)
 		if err != nil {
-			rest.ValidateRequestBody(err, w, s.restValidator.Translator)
+			ValidateRequestBody(err, w, s.restValidator.Translator)
 			return
 		}
 		pasetoToken, err := s.pasetoAuthService.Login(ctx, req.Email, req.Password)
 		if err != nil {
-			rest.JsonResponse(w, http.StatusInternalServerError, rest.NewErrorResponses(rest.ErrorResponse{
-				Code:    rest.CodeAuth1,
+			apiResponse(w, http.StatusInternalServerError, NewErrorResponses(ErrorResponse{
+				Code:    CodeAuth1,
 				Message: err.Error(),
 			}))
 			return
@@ -43,6 +42,6 @@ func (s *Server) Authenticate() http.HandlerFunc {
 			Hex:   pasetoToken.PublicHex,
 			Token: pasetoToken.SignedKey,
 		}
-		rest.JsonResponse(w, http.StatusOK, resp)
+		apiResponse(w, http.StatusOK, resp)
 	}
 }

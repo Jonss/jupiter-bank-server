@@ -1,4 +1,4 @@
-package rest
+package server
 
 import (
 	"github.com/go-playground/locales/en"
@@ -8,7 +8,7 @@ import (
 )
 
 type Validator struct {
-	Validator *validator.Validate
+	Validator  *validator.Validate
 	Translator ut.Translator
 }
 
@@ -21,5 +21,5 @@ func NewValidator() (*Validator, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Validator{validate, translation} , nil
+	return &Validator{validate, translation}, nil
 }

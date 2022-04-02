@@ -86,8 +86,7 @@ func (q *Queries) FetchUserByEmail(ctx context.Context, email string) (*User, er
 		&u.CreatedAt,
 		&u.UpdatedAt,
 	)
-	// TODO: fix it
-	if err == sql.ErrNoRows {
+	if err != nil {
 		return nil, err
 	}
 
