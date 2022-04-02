@@ -34,7 +34,7 @@
 - [x] - Create endpoint to create token
 - [x] - Create middleware to handle tokens
 - [x] - Create endpoint to get user profile protected by authentication
-- [ ] - Test tokens
+- [x] - Test tokens
 
 ### Account
 
