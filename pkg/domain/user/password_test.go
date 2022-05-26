@@ -3,6 +3,7 @@ package user
 import "testing"
 
 func TestHashPassword(t *testing.T) {
+	t.Parallel()
 	password := "P@ssw0rd#123"
 
 	hashedPassword, err := HashPassword(password)

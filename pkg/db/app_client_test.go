@@ -3,12 +3,14 @@ package db
 import (
 	"context"
 	"database/sql"
+	"testing"
+
 	"github.com/bxcodec/faker/v3"
 	"github.com/google/uuid"
-	"testing"
 )
 
 func TestQueries_FetchAppClient(t *testing.T) {
+	t.Parallel()
 	key := uuid.New().String()
 	secret := uuid.New().String()
 	appName := faker.Name()

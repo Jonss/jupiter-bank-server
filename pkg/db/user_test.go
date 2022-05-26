@@ -4,9 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/bxcodec/faker/v3"
 	"math"
 	"testing"
+
+	"github.com/bxcodec/faker/v3"
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
@@ -36,6 +37,7 @@ func createUser(t *testing.T, uuid, fullname, email string) uint64 {
 }
 
 func TestCreateUser(t *testing.T) {
+	t.Parallel()
 	fullname := faker.FirstName() + " " + faker.LastName()
 	createUser(t, uuid.NewString(), fullname, "existing.user@jupiterbank.com")
 
@@ -99,6 +101,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestCheckUserExistsByEmail(t *testing.T) {
+	t.Parallel()
 	existingEmail := faker.Email()
 	fullname := faker.FirstName() + " " + faker.LastName()
 	createUser(t, uuid.NewString(), fullname, existingEmail)
@@ -134,6 +137,7 @@ func TestCheckUserExistsByEmail(t *testing.T) {
 }
 
 func TestFetchUserByEmail(t *testing.T) {
+	t.Parallel()
 	existingEmail := faker.Email()
 	fullname := faker.FirstName() + " " + faker.LastName()
 	newUuid := uuid.New()
@@ -182,6 +186,7 @@ func TestFetchUserByEmail(t *testing.T) {
 }
 
 func TestGetUserByID(t *testing.T) {
+	t.Parallel()
 	email := faker.Email()
 	fullname := faker.FirstName() + " " + faker.LastName()
 	newUuid := uuid.New()

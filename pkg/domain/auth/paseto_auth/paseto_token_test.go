@@ -6,6 +6,7 @@ import (
 )
 
 func TestCreateTokenAndDecryptToken(t *testing.T) {
+	t.Parallel()
 	successToken, err := CreateToken(1)
 	if err != nil {
 		t.Fatal("error when create token", err)

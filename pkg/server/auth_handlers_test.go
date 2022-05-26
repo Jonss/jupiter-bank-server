@@ -3,14 +3,16 @@ package server
 import (
 	"bytes"
 	"database/sql"
-	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/paseto_auth"
-	"github.com/gorilla/mux"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/paseto_auth"
+	"github.com/gorilla/mux"
 )
 
 func TestAuthenticate(t *testing.T) {
+	t.Parallel()
 	validator, _ := NewValidator()
 
 	testCases := []struct {

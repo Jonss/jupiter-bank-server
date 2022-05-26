@@ -48,6 +48,7 @@ const createUserQuery = `
 	) RETURNING id, external_id, fullname, email, created_at, updated_at;
 `
 
+// CreateUser creates user
 func (q *Queries) CreateUser(ctx context.Context, params CreateUserParams) (*User, error) {
 	row := q.db.QueryRowContext(ctx, createUserQuery, params.ExternalID, params.Fullname, params.Email, params.PasswordHash)
 	var u User

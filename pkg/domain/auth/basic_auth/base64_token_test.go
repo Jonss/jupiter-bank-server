@@ -6,7 +6,7 @@ import (
 )
 
 func TestDecodeBase64Token(t *testing.T) {
-
+	t.Parallel()
 	var a base64.CorruptInputError = 8
 	corruptInputErr := a.Error()
 	type args struct {

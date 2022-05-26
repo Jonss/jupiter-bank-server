@@ -20,6 +20,7 @@ var testQueries *Queries
 
 func TestMain(m *testing.M) {
 	ctx := context.Background()
+	fmt.Println("to passando aqui ó")
 	container, err := postgresTestContainer(ctx)
 	if err != nil {
 		log.Fatal("error instantiating postgres container", err)

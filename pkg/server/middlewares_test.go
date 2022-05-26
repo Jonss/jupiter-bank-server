@@ -2,14 +2,16 @@ package server
 
 import (
 	"errors"
-	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/basic_auth"
-	"github.com/gorilla/mux"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/Jonss/jupiter-bank-server/pkg/domain/auth/basic_auth"
+	"github.com/gorilla/mux"
 )
 
 func TestAppClientMiddleware(t *testing.T) {
+	t.Parallel()
 	validator, _ := NewValidator()
 
 	testCases := []struct {

@@ -2,19 +2,20 @@ package server
 
 import (
 	"bytes"
-	"context"
 	"database/sql"
 	"encoding/json"
-	"github.com/Jonss/jupiter-bank-server/pkg/db"
-	"github.com/Jonss/jupiter-bank-server/pkg/domain/user"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/Jonss/jupiter-bank-server/pkg/db"
+	"github.com/Jonss/jupiter-bank-server/pkg/domain/user"
+	"github.com/gorilla/mux"
 )
 
 func TestServerSignup_Success(t *testing.T) {
+	t.Parallel()
 	validator, _ := NewValidator()
 
 	testCases := []struct {
@@ -135,13 +136,13 @@ func TestServerSignup_Error(t *testing.T) {
 			w := httptest.NewRecorder()
 			srv.router.ServeHTTP(w, r)
 
-			result := w.Result()
-			gotStatusCode := result.StatusCode
-			if tc.wantStatusCode != gotStatusCode {
-				t.Fatalf("POST /api/sign-up . status code. want %d, got %d", tc.wantStatusCode, gotStatusCode)
+			got := w.Result()
+
+			if tc.wantStatusCode != got.StatusCode {
+				t.Fatalf("POST /api/sign-up . status code. want %d, got %d", tc.wantStatusCode, got.StatusCode)
 			}
 
-			resultBody, err := ioutil.ReadAll(result.Body)
+			resultBody, err := ioutil.ReadAll(got.Body)
 			if err != nil {
 				t.Fatal("unexpected error reading response body", err)
 			}
@@ -187,16 +188,14 @@ func TestServer_Profile(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			r := httptest.NewRequest(http.MethodGet, "/api/users", nil)
 			w := httptest.NewRecorder()
-			ctx := context.WithValue(r.Context(), userIDKey, "1")
-			r.WithContext(ctx)
 			srv := NewServer(mux.NewRouter(), fakeConfig, validator, tc.userService, &basicAuthMock{}, &pasetoAuthMock{})
 			srv.Routes()
 
 			srv.router.ServeHTTP(w, r)
 
-			result := w.Result()
-			if tc.wantStatusCode != result.StatusCode {
-				t.Fatalf("POST /api/users. want %d, got %d", tc.wantStatusCode, result.StatusCode)
+			got := w.Result()
+			if tc.wantStatusCode != got.StatusCode {
+				t.Fatalf("POST /api/users. want %d, got %d", tc.wantStatusCode, got.StatusCode)
 			}
 
 		})
